@@ -2,6 +2,7 @@ package com.scalesec.vulnado;
 
 import org.springframework.boot.*;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.boot.autoconfigure.*;
 import org.springframework.stereotype.*;
@@ -16,12 +17,14 @@ public class LoginController {
 
   @CrossOrigin(origins = "*")
   @RequestMapping(value = "/login", method = RequestMethod.POST, produces = "application/json", consumes = "application/json")
-  LoginResponse login(@RequestBody LoginRequest input) {
+  ResponseEntity<LoginResponse> login(@RequestBody LoginRequest input) {
     User user = User.fetch(input.username);
     if (Postgres.md5(input.password).equals(user.hashedPassword)) {
-      return new LoginResponse(user.token(secret));
+      LoginResponse loginResponse= new LoginResponse(user.token(secret));
+      return ResponseEntity.ok(loginResponse);
     } else {
-      return new LoginResponse(user.token(secret));
+      LoginResponse loginResponse= new LoginResponse("Unauthorised");
+      return ResponseEntity.ok(loginResponse);
     }
   }
 }
