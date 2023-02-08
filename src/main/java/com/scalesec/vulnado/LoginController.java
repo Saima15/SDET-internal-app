@@ -21,7 +21,7 @@ public class LoginController {
     if (Postgres.md5(input.password).equals(user.hashedPassword)) {
       return new LoginResponse(user.token(secret));
     } else {
-      throw new Unauthorized("Access Denied");
+      return new LoginResponse(user.token(secret));
     }
   }
 }

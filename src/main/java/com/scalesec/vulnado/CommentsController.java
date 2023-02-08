@@ -17,19 +17,25 @@ public class CommentsController {
   @RequestMapping(value = "/comments", method = RequestMethod.GET, produces = "application/json")
   List<Comment> comments(@RequestHeader(value="x-auth-token") String token) {
     User.assertAuth(secret, token);
-    return Comment.fetch_all();
+    return Comment.fetchAllComments();
   }
 
   @CrossOrigin(origins = "*")
   @RequestMapping(value = "/comments", method = RequestMethod.POST, produces = "application/json", consumes = "application/json")
   Comment createComment(@RequestHeader(value="x-auth-token") String token, @RequestBody CommentRequest input) {
-    return Comment.create(input.username, input.body);
+    return Comment.createComment(input.username, input.body);
   }
 
   @CrossOrigin(origins = "*")
   @RequestMapping(value = "/comments/{id}", method = RequestMethod.DELETE, produces = "application/json")
   Boolean deleteComment(@RequestHeader(value="x-auth-token") String token, @PathVariable("id") String id) {
-    return Comment.delete(id);
+    return Comment.deleteComment(id);
+  }
+
+  @CrossOrigin(origins = "*")
+  @RequestMapping(value = "/user-comments", method = RequestMethod.GET, produces = "application/json")
+  List<Comment> getUserDetails(@RequestHeader(value = "x-auth-token") String token, @RequestParam("user") String user) {
+    return Comment.getCommentsByUserName(user);
   }
 }
 

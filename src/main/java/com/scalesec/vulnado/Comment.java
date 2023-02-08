@@ -1,6 +1,5 @@
 package com.scalesec.vulnado;
 
-import org.apache.catalina.Server;
 import java.sql.*;
 import java.util.Date;
 import java.util.List;
@@ -18,7 +17,7 @@ public class Comment {
     this.created_on = created_on;
   }
 
-  public static Comment create(String username, String body){
+  public static Comment createComment(String username, String body){
     long time = new Date().getTime();
     Timestamp timestamp = new Timestamp(time);
     Comment comment = new Comment(UUID.randomUUID().toString(), username, body, timestamp);
@@ -33,7 +32,7 @@ public class Comment {
     }
   }
 
-  public static List<Comment> fetch_all() {
+  public static List<Comment> fetchAllComments() {
     Statement stmt = null;
     List<Comment> comments = new ArrayList();
     try {
@@ -59,7 +58,7 @@ public class Comment {
     }
   }
 
-  public static Boolean delete(String id) {
+  public static Boolean deleteComment(String id) {
     try {
       String sql = "DELETE FROM comments where id = ?";
       Connection con = Postgres.connection();
@@ -82,5 +81,35 @@ public class Comment {
     pStatement.setString(3, this.body);
     pStatement.setTimestamp(4, this.created_on);
     return 1 == pStatement.executeUpdate();
+  }
+
+  public static List<Comment> getCommentsByUserName(String user) {
+    List<Comment> comments = new ArrayList<>();
+    try {
+      Connection con;
+      PreparedStatement pstmt;
+      ResultSet rs;
+      String sql = "SELECT * FROM comments WHERE username=?" ;
+
+      con = Postgres.connection();
+      pstmt = con.prepareStatement(sql);
+      pstmt.setString(1,user);
+
+      rs = pstmt.executeQuery();
+      while (rs.next()) {
+        String id = rs.getString("id");
+        String username = rs.getString("username");
+        String body = rs.getString("body");
+        Timestamp createdOn = rs.getTimestamp("created_on");
+        Comment c = new Comment(id, username, body, createdOn);
+        comments.add(c);
+      }
+      con.close();
+    } catch (Exception e) {
+      e.printStackTrace();
+      System.err.println(e.getClass().getName()+": "+e.getMessage());
+    } finally {
+      return comments;
+    }
   }
 }
