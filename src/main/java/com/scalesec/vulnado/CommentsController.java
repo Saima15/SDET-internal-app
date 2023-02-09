@@ -38,9 +38,17 @@ public class CommentsController {
 
   @CrossOrigin(origins = "*")
   @RequestMapping(value = "/user-comments", method = RequestMethod.GET, produces = "application/json")
-  List<Comment> getUserDetails(@RequestHeader(value = "x-auth-token") String token, @RequestParam("user") String user) {
+  List<Comment> getUserComments(@RequestHeader(value = "x-auth-token") String token, @RequestParam("user") String user) {
     return Comment.getCommentsByUserName(user);
   }
+
+  @CrossOrigin(origins = "*")
+  @RequestMapping(value = "/comments/{id}", method = RequestMethod.PUT, produces = "application/json")
+  String updateComment(@RequestHeader(value = "x-auth-token") String token, @PathVariable("id") String id,
+                       @RequestBody CommentRequest input) throws SQLException {
+    return Comment.updateComment(input.body, id);
+  }
+
 }
 
 class CommentRequest implements Serializable {

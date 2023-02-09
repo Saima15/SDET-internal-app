@@ -84,6 +84,27 @@ public class Comment {
     return "Deleted";
   }
 
+  public static String updateComment(String newComment, String id) throws SQLException {
+    try {
+      Connection con = Postgres.connection();
+      PreparedStatement pStatement;
+      String sql = "UPDATE comments SET body=? WHERE id=?";
+      pStatement = con.prepareStatement(sql);
+      pStatement.setString(1, newComment);
+      pStatement.setString(2, id);
+
+      if (1 == pStatement.executeUpdate()) {
+        return "Updated successfully";
+      } else
+        return "Update unsuccessful";
+
+    }
+    catch (Exception e) {
+      throw e;
+    }
+
+  }
+
   private Boolean commit() throws SQLException {
     String sql = "INSERT INTO comments (id, username, body, created_on) VALUES (?,?,?,?)";
     Connection con = Postgres.connection();
