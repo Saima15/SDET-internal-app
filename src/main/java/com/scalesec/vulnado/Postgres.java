@@ -13,14 +13,14 @@ public class Postgres {
 
     public static Connection connection() {
         try {
-            Class.forName("org.postgresql.Driver");
-            String url = new StringBuilder()
-                    .append("jdbc:postgresql://")
-                    .append(System.getenv("PGHOST"))
-                    .append("/")
-                    .append(System.getenv("PGDATABASE")).toString();
+            Class.forName(
+                    "com.mysql.cj.jdbc.Driver");
+            String url
+                    = "jdbc:mysql://localhost:3306/table_name?enabledTLSProtocols=TLSv1.2";
+            String username = "root"; // MySQL credentials
+            String password = "password";
             return DriverManager.getConnection(url,
-                    System.getenv("PGUSER"), System.getenv("PGPASSWORD"));
+                    username,password);
         } catch (Exception e) {
             e.printStackTrace();
             System.err.println(e.getClass().getName()+": "+e.getMessage());
@@ -51,7 +51,7 @@ public class Postgres {
 
             insertComment("rick", "cool dog m8");
             insertComment("alice", "OMG so cute!");
-            c.close();
+//            c.close();
         } catch (Exception e) {
             System.out.println(e);
             System.exit(1);
