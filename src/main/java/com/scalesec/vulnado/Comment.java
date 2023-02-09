@@ -1,10 +1,8 @@
 package com.scalesec.vulnado;
 
 import java.sql.*;
+import java.util.*;
 import java.util.Date;
-import java.util.List;
-import java.util.ArrayList;
-import java.util.UUID;
 
 public class Comment {
   public String id, username, body;
@@ -32,14 +30,22 @@ public class Comment {
     }
   }
 
-  public static List<Comment> fetchAllComments() {
+  public static List<Comment> fetchAllComments(String orderBy) throws SQLException {
     Statement stmt = null;
     List<Comment> comments = new ArrayList();
     try {
       Connection cxn = Postgres.connection();
       stmt = cxn.createStatement();
-
-      String query = "select * from comments;";
+      String query = null;
+      if(orderBy.equals("ASC")||orderBy.equals("asc")) {
+         query = "select * from comments order by username DESC;";
+      }
+      else if(orderBy.equals("DESC")||orderBy.equals("desc")) {
+         query = "select * from comments order by username ASC;";
+      }
+      if(Objects.isNull(query)){
+        throw new ServerError("Order is not present");
+      }
       ResultSet rs = stmt.executeQuery(query);
       while (rs.next()) {
         String id = rs.getString("id");
@@ -49,27 +55,33 @@ public class Comment {
         Comment c = new Comment(id, username, body, created_on);
         comments.add(c);
       }
-      cxn.close();
+//      cxn.close();
     } catch (Exception e) {
-      e.printStackTrace();
       System.err.println(e.getClass().getName()+": "+e.getMessage());
-    } finally {
-      return comments;
+      throw e;
     }
+//    finally {
+      return comments;
+//    }
   }
 
-  public static Boolean deleteComment(String id) {
+  public static String deleteComment(String id) {
     try {
       String sql = "DELETE FROM comments where id = ?";
       Connection con = Postgres.connection();
       PreparedStatement pStatement = con.prepareStatement(sql);
       pStatement.setString(1, id);
-      return 1 == pStatement.executeUpdate();
-    } catch(Exception e) {
+
+      if (1 == pStatement.executeUpdate()) {
+        return "Deleted successfully";
+      } else
+        return "Delete unsuccessful";
+
+    } catch (Exception e) {
       e.printStackTrace();
-    } finally {
-      return false;
     }
+
+    return "Deleted";
   }
 
   private Boolean commit() throws SQLException {
@@ -104,7 +116,7 @@ public class Comment {
         Comment c = new Comment(id, username, body, createdOn);
         comments.add(c);
       }
-      con.close();
+//      con.close();
     } catch (Exception e) {
       e.printStackTrace();
       System.err.println(e.getClass().getName()+": "+e.getMessage());
