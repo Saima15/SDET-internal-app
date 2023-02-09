@@ -8,6 +8,7 @@ import org.springframework.boot.autoconfigure.*;
 import org.springframework.stereotype.*;
 import org.springframework.beans.factory.annotation.*;
 import java.io.Serializable;
+import java.sql.SQLException;
 
 @RestController
 @EnableAutoConfiguration
@@ -26,6 +27,14 @@ public class LoginController {
       LoginResponse loginResponse= new LoginResponse("Unauthorised");
       return ResponseEntity.ok(loginResponse);
     }
+  }
+
+  @CrossOrigin(origins = "*")
+  @RequestMapping(value = "/register", method = RequestMethod.POST, produces = "application/json", consumes = "application/json")
+  ResponseEntity<String> register(@RequestBody LoginRequest input) throws SQLException {
+    String result = User.insertUser(input.username, input.password);
+    return ResponseEntity.ok(result);
+
   }
 }
 

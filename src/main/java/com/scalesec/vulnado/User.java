@@ -1,8 +1,8 @@
 package com.scalesec.vulnado;
 
-import java.sql.Connection;
-import java.sql.Statement;
-import java.sql.ResultSet;
+import java.sql.*;
+import java.util.UUID;
+
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.JwtParser;
 import io.jsonwebtoken.SignatureAlgorithm;
@@ -59,6 +59,27 @@ public class User {
       System.err.println(e.getClass().getName()+": "+e.getMessage());
     } finally {
       return user;
+    }
+  }
+
+  public static String insertUser(String username, String password) throws SQLException {
+    String sql = "INSERT INTO users (user_id, username, password, created_on) VALUES (?, ?, ?, current_timestamp)";
+    PreparedStatement pStatement = null;
+    try {
+      Connection cxn = Postgres.connection();
+
+      pStatement = cxn.prepareStatement(sql);
+      pStatement.setString(1, UUID.randomUUID().toString());
+      pStatement.setString(2, username);
+      pStatement.setString(3, Postgres.md5(password));
+      if(1==pStatement.executeUpdate()){
+        return "Registered";
+      }
+      else {
+        return "Error in registration";
+      }
+    } catch(Exception e) {
+      throw e;
     }
   }
 }
