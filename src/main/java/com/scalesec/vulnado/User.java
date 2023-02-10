@@ -68,7 +68,7 @@ public class User {
             }
             cxn.close();
         } catch (Exception e) {
-            e.printStackTrace();
+//            e.printStackTrace();
             System.err.println(e.getClass().getName() + ": " + e.getMessage());
         } finally {
             return user;
