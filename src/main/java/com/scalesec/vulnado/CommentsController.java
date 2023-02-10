@@ -1,7 +1,8 @@
 package com.scalesec.vulnado;
 
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.util.ObjectUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.beans.factory.annotation.*;
@@ -14,12 +15,14 @@ import java.io.Serializable;
 
 @RestController
 @EnableAutoConfiguration
+@Api(tags = {"Comments"})
 public class CommentsController {
   @Value("${app.secret}")
   private String secret;
 
   @CrossOrigin(origins = "*")
   @ResponseStatus(HttpStatus.CREATED)
+  @ApiOperation("This API is to get list of all comments")
   @RequestMapping(value = "/comments", method = RequestMethod.GET, produces = "application/json")
   List<Comment> comments(@RequestHeader(value="x-auth-token") String token, @RequestParam("orderByUserName") String orderByUserName) throws SQLException {
     User.assertAuth(secret, token);
@@ -28,6 +31,7 @@ public class CommentsController {
 
   @CrossOrigin(origins = "*")
   @ResponseStatus(HttpStatus.OK)
+  @ApiOperation("This API is to add a comment")
   @RequestMapping(value = "/comments", method = RequestMethod.PUT, produces = "application/json", consumes = "application/json")
   Comment createComment(@RequestHeader(value = "x-auth-token") String token, @RequestBody @Valid CommentRequest input) {
     if (input.body.length() >= 5 && input.body.length() <= 10) {
@@ -38,6 +42,7 @@ public class CommentsController {
   }
 
   @CrossOrigin(origins = "*")
+  @ApiOperation("This API is to delete a comment")
   @RequestMapping(value = "/comments/{id}", method = RequestMethod.DELETE, produces = "application/json")
   String deleteComment(@RequestHeader(value="x-auth-token") String token, @PathVariable("id") String id) {
     return Comment.deleteComment(id);
@@ -45,6 +50,7 @@ public class CommentsController {
 
   @CrossOrigin(origins = "*")
   @ResponseStatus(HttpStatus.NOT_FOUND)
+  @ApiOperation("This API is to get comments of a particular user")
   @RequestMapping(value = "/user-comments", method = RequestMethod.GET, produces = "application/json")
   List<Comment> getUserComments(@RequestHeader(value = "x-auth-token") String token, @RequestParam("user") String user) {
     if (ObjectUtils.isEmpty(Comment.getCommentsByUserName(user))) {
@@ -55,6 +61,7 @@ public class CommentsController {
   }
 
   @CrossOrigin(origins = "*")
+  @ApiOperation("This API is to update a comment")
   @RequestMapping(value = "/comments/{id}", method = RequestMethod.POST, produces = "application/json")
   String updateComment(@RequestHeader(value = "x-auth-token") String token, @PathVariable("id") String id,
                        @RequestBody CommentRequest input) throws SQLException {

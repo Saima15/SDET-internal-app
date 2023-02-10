@@ -1,6 +1,8 @@
 package com.scalesec.vulnado;
 
 
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -11,11 +13,13 @@ import java.sql.SQLException;
 
 @RestController
 @EnableAutoConfiguration
+@Api(tags = {"Login"})
 public class LoginController {
   @Value("${app.secret}")
   private String secret;
 
   @CrossOrigin(origins = "*")
+  @ApiOperation("This API is to login and get token")
   @RequestMapping(value = "/login", method = RequestMethod.POST, produces = "application/json", consumes = "application/json")
   ResponseEntity<LoginResponse> login(@RequestBody LoginRequest input) {
     User user = User.fetch(input.username);
@@ -29,6 +33,7 @@ public class LoginController {
   }
 
   @CrossOrigin(origins = "*")
+  @ApiOperation("This API is to register a user")
   @RequestMapping(value = "/register", method = RequestMethod.POST, produces = "application/json", consumes = "application/json")
   ResponseEntity<String> register(@RequestBody LoginRequest input) throws SQLException {
     String result = User.insertUser(input.username, input.password);
