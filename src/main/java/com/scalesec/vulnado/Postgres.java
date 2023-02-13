@@ -16,7 +16,7 @@ public class Postgres {
             Class.forName(
                     "com.mysql.cj.jdbc.Driver");
             String url
-                    = "jdbc:mysql://localhost:3306/table_name?enabledTLSProtocols=TLSv1.2";
+                    = "jdbc:mysql://localhost:3306/training?enabledTLSProtocols=TLSv1.2";
             String username = "root"; // MySQL credentials
             String password = "password";
             return DriverManager.getConnection(url,
