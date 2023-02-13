@@ -26,7 +26,7 @@ public class CommentsController {
 
   @CrossOrigin(origins = "*")
   @ResponseStatus(HttpStatus.CREATED)
-  @ApiOperation("This API is to get list of all comments")
+  @ApiOperation("This API is returns list of all the comments. Sorting is based on the username [orderByUserName : ASC/DESC]")
   @RequestMapping(value = "/comments", method = RequestMethod.GET, produces = "application/json")
   List<Comment> comments(@RequestHeader(value="x-auth-token") String token, @RequestParam("orderByUserName") String orderByUserName) throws SQLException {
     User.assertAuth(secret, token);
