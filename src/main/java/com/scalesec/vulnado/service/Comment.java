@@ -1,4 +1,8 @@
-package com.scalesec.vulnado;
+package com.scalesec.vulnado.service;
+
+import com.scalesec.vulnado.Postgres;
+import com.scalesec.vulnado.exceptions.BadRequest;
+import com.scalesec.vulnado.exceptions.ServerError;
 
 import java.sql.*;
 import java.util.*;
@@ -88,7 +92,7 @@ public class Comment {
     try {
       Connection con = Postgres.connection();
       PreparedStatement pStatement;
-      String sql = "UPDATE comments SET body=? WHERE id=?";
+      String sql = "UPDATE comments SET body=? WHERE username=?";
       pStatement = con.prepareStatement(sql);
       pStatement.setString(1, newComment);
       pStatement.setString(2, id);

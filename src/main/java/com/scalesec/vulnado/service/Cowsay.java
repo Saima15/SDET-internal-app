@@ -1,4 +1,4 @@
-package com.scalesec.vulnado;
+package com.scalesec.vulnado.service;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;

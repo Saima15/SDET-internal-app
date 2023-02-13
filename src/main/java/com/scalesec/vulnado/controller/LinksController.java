@@ -1,13 +1,12 @@
-package com.scalesec.vulnado;
+package com.scalesec.vulnado.controller;
 
-import org.springframework.boot.*;
-import org.springframework.http.HttpStatus;
+import com.scalesec.vulnado.exceptions.BadRequest;
+import com.scalesec.vulnado.service.LinkLister;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.boot.autoconfigure.*;
 import springfox.documentation.annotations.ApiIgnore;
 
 import java.util.List;
-import java.io.Serializable;
 import java.io.IOException;
 
 
@@ -20,7 +19,7 @@ public class LinksController {
     return LinkLister.getLinks(url);
   }
   @RequestMapping(value = "/links-v2", produces = "application/json")
-  List<String> linksV2(@RequestParam String url) throws BadRequest{
+  List<String> linksV2(@RequestParam String url) throws BadRequest {
     return LinkLister.getLinksV2(url);
   }
 }

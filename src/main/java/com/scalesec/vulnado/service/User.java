@@ -1,4 +1,7 @@
-package com.scalesec.vulnado;
+package com.scalesec.vulnado.service;
+
+import com.scalesec.vulnado.Postgres;
+import com.scalesec.vulnado.exceptions.Unauthorized;
 
 import java.sql.*;
 import java.text.DateFormatSymbols;

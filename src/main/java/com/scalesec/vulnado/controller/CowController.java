@@ -1,10 +1,9 @@
-package com.scalesec.vulnado;
+package com.scalesec.vulnado.controller;
 
+import com.scalesec.vulnado.service.Cowsay;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.boot.autoconfigure.*;
 import springfox.documentation.annotations.ApiIgnore;
-
-import java.io.Serializable;
 
 @RestController
 @EnableAutoConfiguration

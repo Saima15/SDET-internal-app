@@ -1,5 +1,6 @@
-package com.scalesec.vulnado;
+package com.scalesec.vulnado.service;
 
+import com.scalesec.vulnado.exceptions.BadRequest;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;

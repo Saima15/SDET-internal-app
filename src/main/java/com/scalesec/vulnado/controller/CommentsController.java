@@ -1,5 +1,10 @@
-package com.scalesec.vulnado;
+package com.scalesec.vulnado.controller;
 
+import com.scalesec.vulnado.service.Comment;
+import com.scalesec.vulnado.service.User;
+import com.scalesec.vulnado.dto.CommentRequest;
+import com.scalesec.vulnado.exceptions.BadRequest;
+import com.scalesec.vulnado.exceptions.Found;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.http.HttpStatus;
@@ -11,7 +16,6 @@ import org.springframework.boot.autoconfigure.*;
 import javax.validation.Valid;
 import java.sql.SQLException;
 import java.util.List;
-import java.io.Serializable;
 
 @RestController
 @EnableAutoConfiguration
@@ -52,7 +56,7 @@ public class CommentsController {
   @ResponseStatus(HttpStatus.NOT_FOUND)
   @ApiOperation("This API is to get comments of a particular user")
   @RequestMapping(value = "/user-comments", method = RequestMethod.GET, produces = "application/json")
-  List<Comment> getUserComments(@RequestHeader(value = "x-auth-token") String token, @RequestParam("user") String user) {
+  List<Comment> getUserComments(@RequestHeader(value = "x-auth-token") String token, @RequestParam(value = "user",required = false) String user) {
     if (ObjectUtils.isEmpty(Comment.getCommentsByUserName(user))) {
       throw new Found("Comment found for user");
     } else {
@@ -62,37 +66,10 @@ public class CommentsController {
 
   @CrossOrigin(origins = "*")
   @ApiOperation("This API is to update a comment")
-  @RequestMapping(value = "/comments/{id}", method = RequestMethod.POST, produces = "application/json")
-  String updateComment(@RequestHeader(value = "x-auth-token") String token, @PathVariable("id") String id,
+  @RequestMapping(value = "/comments/{username}", method = RequestMethod.POST, produces = "application/json")
+  String updateComment(@RequestHeader(value = "x-auth-token") String token, @PathVariable("username") String username,
                        @RequestBody CommentRequest input) throws SQLException {
-    return Comment.updateComment(input.body, id);
+    return Comment.updateComment(input.body, username);
   }
 
-}
-
-
-class CommentRequest implements Serializable {
-  public String username;
-  public String body;
-
-}
-
-@ResponseStatus(HttpStatus.BAD_REQUEST)
-class BadRequest extends RuntimeException {
-  public BadRequest(String exception) {
-    super(exception);
-  }
-}
-
-@ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
-class ServerError extends RuntimeException {
-  public ServerError(String exception) {
-    super(exception);
-  }
-}
-@ResponseStatus(HttpStatus.FOUND)
-class Found extends RuntimeException {
-  public Found(String exception) {
-    super(exception);
-  }
 }
