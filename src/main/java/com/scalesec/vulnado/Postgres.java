@@ -1,5 +1,9 @@
 package com.scalesec.vulnado;
 
+
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.math.BigInteger;
@@ -7,18 +11,49 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.sql.PreparedStatement;
 import java.sql.Statement;
+import java.util.Properties;
 import java.util.UUID;
+
 
 public class Postgres {
 
+    private static Properties prop;
+
+    static{
+        InputStream is = null;
+        try {
+            prop = new Properties();
+            is = ClassLoader.class.getResourceAsStream("/application.properties");
+            prop.load(is);
+            String env=getPropertyValue("spring.profiles.active");
+            prop.clear();
+            is=null;
+            if (env.equals("prod")) {
+                is = ClassLoader.class.getResourceAsStream("/application-prod.properties");
+
+            } else {
+                is = ClassLoader.class.getResourceAsStream("/application-dev.properties");
+
+            }
+            prop.load(is);
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static String getPropertyValue(String key){
+        return prop.getProperty(key);
+
+    }
     public static Connection connection() {
         try {
             Class.forName(
                     "com.mysql.cj.jdbc.Driver");
-            String url
-                    = "jdbc:mysql://localhost:3306/training?enabledTLSProtocols=TLSv1.2";
-            String username = "root"; // MySQL credentials
-            String password = "password";
+            String url = getPropertyValue("db.url") ;
+            String username = getPropertyValue("db.user"); // MySQL credentials
+            String password = getPropertyValue("db.password");
             return DriverManager.getConnection(url,
                     username,password);
         } catch (Exception e) {
